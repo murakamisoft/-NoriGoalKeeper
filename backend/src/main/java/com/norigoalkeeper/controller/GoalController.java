@@ -8,11 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 /**
  * ゴールに関するAPIを提供するコントローラクラス。
  */
+@Tag(name = "ゴール")
 @RestController
 @RequestMapping("/goals")
 @Validated
@@ -27,6 +31,7 @@ public class GoalController {
    * @param goal 登録するゴール情報
    * @return 登録したゴールのID
    */
+  @Operation(summary = "新しいゴールを登録", description = "新しいゴールを登録し、そのIDを返します。", tags = { "ゴール" })
   @PostMapping
   public ResponseEntity<Long> createGoal(@RequestBody Goal goal) {
     Long createdGoalId = goalService.createGoal(goal);
@@ -39,6 +44,7 @@ public class GoalController {
    * @param goalId ゴールID
    * @return ゴール情報
    */
+  @Operation(summary = "ゴール情報を取得", description = "指定したゴールIDに基づいてゴール情報を取得します。", tags = { "ゴール" })
   @GetMapping("/{goalId}")
   public ResponseEntity<Goal> getGoalById(@PathVariable Long goalId) {
     Goal goal = goalService.getGoalById(goalId);
@@ -51,6 +57,7 @@ public class GoalController {
    * @param userId ユーザーID
    * @return ゴール情報のリスト
    */
+  @Operation(summary = "ユーザーに関連するすべてのゴールを取得", description = "指定したユーザーIDに関連するすべてのゴール情報を取得します。", tags = { "ゴール" })
   @GetMapping("/user/{userId}")
   public ResponseEntity<List<Goal>> getGoalsByUserId(@PathVariable Long userId) {
     List<Goal> goals = goalService.getGoalsByUserId(userId);
@@ -63,6 +70,7 @@ public class GoalController {
    * @param goal 更新するゴール情報
    * @return 更新結果
    */
+  @Operation(summary = "ゴール情報を更新", description = "指定したゴール情報を更新します。", tags = { "ゴール" })
   @PutMapping
   public ResponseEntity<Void> updateGoal(@RequestBody Goal goal) {
     int updatedCount = goalService.updateGoal(goal);
@@ -75,6 +83,7 @@ public class GoalController {
    * @param goalId ゴールID
    * @return 削除結果
    */
+  @Operation(summary = "ゴールを削除", description = "指定したゴールIDに基づいてゴールを削除します。", tags = { "ゴール" })
   @DeleteMapping("/{goalId}")
   public ResponseEntity<Void> deleteGoal(@PathVariable Long goalId) {
     int deletedCount = goalService.deleteGoal(goalId);

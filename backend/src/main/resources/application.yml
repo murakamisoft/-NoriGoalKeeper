@@ -5,4 +5,21 @@ spring:
     url: jdbc:postgresql://localhost:5432/norigoalkeeper
     username: nori_goalkeeper_user
     password: pass
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  info:
+    title: NoriGoalKeeper API
+    version: 1.0.0
+    description: API documentation for NoriGoalKeeper application.
+    termsOfService: http://your-terms-of-service-url
+    contact:
+      name: Your Name
+      url: http://your-contact-url
+      email: your-email@example.com
+    license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html
 
