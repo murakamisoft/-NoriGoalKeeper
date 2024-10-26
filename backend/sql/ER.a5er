@@ -1,0 +1,199 @@
+﻿# A5:ER FORMAT:18
+# A5:ER ENCODING:UTF8
+# A5:ER Mk-1 Copyright © 2007 m.matsubara
+# A5:SQL Mk-2 Version 2.19.2 Copyright © 1997 - 2024 m.matsubara
+#  https://a5m2.mmatsubara.com
+
+[Manager]
+ProjectName=
+Author=
+MaxEntityRowShow=1000
+ReadOnlyRecommend=0
+Page=Main
+PageInfo="Main",2,"A3Landscape",$FFFFFF
+LogicalView=1
+DecodeDomain=0
+ViewModePageIndividually=1
+ViewMode=2
+ViewFormat=0
+UseNondependenceDashLine=0
+FontName=Tahoma
+FontSize=10
+PaperSize=A4Landscape
+HeaderLeft=
+HeaderCenter=
+HeaderRight=
+FooterLeft=
+FooterCenter=
+FooterRight=
+ShowPageoutRelation=1
+RDBMSType=7
+RDBMSTypeName=PostgreSQL
+GenerateDropTableStatement=1
+DropTableIfExists=1
+BackupRestoreTempTable=0
+DefaultPkName=%0:s_PKC
+DefaultPkIndexName=%0:s_PKI
+DefaultIndexName=%0:s_IX%1:d
+DefaultFkName=%0:s_FK%1:d
+SqlSeparator=0
+UpperCaseKeyword=1
+ShowTag=1
+ShowCommonAttributes=0
+BugFixEntityWidth=1
+
+[Entity]
+PName=m_users
+LName=ユーザーマスタ
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=250
+Top=250
+Field="ユーザーID","user_id","serial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ユーザー名","username","character varying(50)","NOT NULL",,"","",$FFFFFFFF,""
+Field="メールアドレス","email","character varying(100)","NOT NULL",,"","",$FFFFFFFF,""
+Field="パスワード","password","character varying(255)","NOT NULL",,"","",$FFFFFFFF,""
+Field="作成日","created_at","timestamp(6) without time zone",,,"CURRENT_TIMESTAMP","",$FFFFFFFF,""
+Field="更新日","updated_at","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+Index=m_users_email_key=2,email
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20241026121438
+Position="MAIN",250,250
+ZOrder=-1
+
+[Entity]
+PName=t_goals
+LName=目標
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=800
+Top=250
+Field="目標ID","goal_id","serial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ユーザーID","user_id","integer","NOT NULL",,"","",$FFFFFFFF,""
+Field="目標名称","title","character varying(100)","NOT NULL",,"","",$FFFFFFFF,""
+Field="目標詳細","description","text",,,"","",$FFFFFFFF,""
+Field="目標達成予定日","target_date","date",,,"","",$FFFFFFFF,""
+Field="作成日","created_at","timestamp(6) without time zone",,,"CURRENT_TIMESTAMP","",$FFFFFFFF,""
+Field="更新日","updated_at","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20241026123054
+Position="MAIN",800,250
+ZOrder=-2
+
+[Entity]
+PName=t_progress
+LName=進捗
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=800
+Top=850
+Field="進捗ID","progress_id","serial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="目標ID","goal_id","integer","NOT NULL",,"","",$FFFFFFFF,""
+Field="進捗記録日","recorded_date","date","NOT NULL",,"","",$FFFFFFFF,""
+Field="進捗の割合","progress_rate","numeric",,,"","",$FFFFFFFF,""
+Field="コメント","comment","text",,,"","",$FFFFFFFF,""
+Field="作成日","created_at","timestamp(6) without time zone",,,"CURRENT_TIMESTAMP","",$FFFFFFFF,""
+Field="更新日","updated_at","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20241026123116
+Position="MAIN",800,850
+ZOrder=-3
+
+[Entity]
+PName=t_tasks
+LName=タスク
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=1450
+Top=300
+Field="タスクID","task_id","serial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="目標ID","goal_id","integer","NOT NULL",,"","",$FFFFFFFF,""
+Field="タスク名称","title","character varying(100)","NOT NULL",,"","",$FFFFFFFF,""
+Field="タスク詳細","description","text",,,"","",$FFFFFFFF,""
+Field="タスク進捗状況","status","integer",,,"0","",$FFFFFFFF,""
+Field="タスク完了予定日","due_date","date",,,"","",$FFFFFFFF,""
+Field="作成日","created_at","timestamp(6) without time zone",,,"CURRENT_TIMESTAMP","",$FFFFFFFF,""
+Field="更新日","updated_at","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20241026123128
+Position="MAIN",1450,300
+ZOrder=-4
+
+[Relation]
+Entity1=t_goals
+Entity2=t_tasks
+RelationType1=2
+RelationType2=3
+Fields1=goal_id
+Fields2=goal_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,5105,7400,4644,R,R,""
+Dependence=0
+Caption=
+PName=
+LineMode=0
+Bar1=510
+Bar2=740
+Bar3=464
+TermPos1=R
+TermPos2=R
+ZOrder=-7
+
+[Relation]
+Entity1=t_goals
+Entity2=t_progress
+RelationType1=2
+RelationType2=3
+Fields1=goal_id
+Fields2=goal_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,5156,6245,5205,R,R,""
+Dependence=0
+Caption=
+PName=
+LineMode=0
+Bar1=516
+Bar2=624
+Bar3=520
+TermPos1=R
+TermPos2=R
+ZOrder=-6
+
+[Relation]
+Entity1=m_users
+Entity2=t_goals
+RelationType1=2
+RelationType2=3
+Fields1=user_id
+Fields2=user_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,6500,4755,5571,R,R,""
+Dependence=0
+Caption=
+PName=
+LineMode=0
+Bar1=650
+Bar2=476
+Bar3=557
+TermPos1=R
+TermPos2=R
+ZOrder=-5
