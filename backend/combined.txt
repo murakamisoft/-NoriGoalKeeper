@@ -1,0 +1,31 @@
+以下が最新のソース一覧
+----- C:\Users\nori\workspace\NoriGoalKeeper\backend\src\main\java\com\norigoalkeeper\NoriGoalKeeperApplication.java ----- 
+package com.norigoalkeeper;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class NoriGoalKeeperApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(NoriGoalKeeperApplication.class, args);
+	}
+
+}
+   
+----- C:\Users\nori\workspace\NoriGoalKeeper\backend\src\test\java\com\norigoalkeeper\NoriGoalKeeperApplicationTests.java ----- 
+package com.norigoalkeeper;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class NoriGoalKeeperApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
+   

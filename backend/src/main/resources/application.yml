@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: NoriGoalKeeper
+  datasource:
+    url: jdbc:postgresql://localhost:5432/norigoalkeeper
+    username: your_db_username
+    password: your_db_password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
