@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.norigoalkeeper.mapper.GoalMapper">
+
+    <!-- ゴールエンティティのマッピング -->
+    <resultMap id="goalResultMap" type="com.norigoalkeeper.model.Goal">
+        <result property="goalId" column="goal_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="targetDate" column="target_date"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 新しいゴールを挿入 -->
+    <insert id="insertGoal" parameterType="com.norigoalkeeper.model.Goal" useGeneratedKeys="true" keyProperty="goalId">
+        INSERT INTO t_goals (user_id, title, description, target_date, created_at, updated_at)
+        VALUES (#{userId}, #{title}, #{description}, #{targetDate}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- ゴールIDをもとにゴール情報を取得 -->
+    <select id="findGoalById" resultMap="goalResultMap" parameterType="long">
+        SELECT * FROM t_goals WHERE goal_id = #{goalId}
+    </select>
+
+    <!-- 指定されたユーザーIDに関連するすべてのゴールを取得 -->
+    <select id="findGoalsByUserId" resultMap="goalResultMap" parameterType="long">
+        SELECT * FROM t_goals WHERE user_id = #{userId}
+    </select>
+
+    <!-- ゴール情報を更新 -->
+    <update id="updateGoal" parameterType="com.norigoalkeeper.model.Goal">
+        UPDATE t_goals SET title = #{title}, description = #{description}, target_date = #{targetDate},
+        updated_at = CURRENT_TIMESTAMP WHERE goal_id = #{goalId}
+    </update>
+
+    <!-- ゴールIDをもとにゴールを削除 -->
+    <delete id="deleteGoal" parameterType="long">
+        DELETE FROM t_goals WHERE goal_id = #{goalId}
+    </delete>
+</mapper>

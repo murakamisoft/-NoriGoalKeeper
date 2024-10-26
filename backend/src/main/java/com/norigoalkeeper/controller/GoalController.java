@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Tag(name = "ゴール")
 @RestController
-@RequestMapping("/goals")
+@RequestMapping("/api/goals")
 @Validated
 public class GoalController {
 

@@ -1,0 +1,252 @@
+以下が最新のソース一覧
+----- C:\Users\nori\workspace\NoriGoalKeeper\frontend\src\App.jsx ----- 
+// src/App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CssBaseline } from '@mui/material';
+import Dashboard from './pages/Dashboard';
+import GoalList from './pages/GoalList';
+import GoalDetail from './pages/GoalDetail';
+import Header from './components/Header';
+
+const App = () => {
+  return (
+    <Router>
+      <CssBaseline />
+      <Header />
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/goals" element={<GoalList />} />
+        <Route path="/goals/:id" element={<GoalDetail />} />
+        {/* 必要に応じて他のページも追加 */}
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
+   
+----- C:\Users\nori\workspace\NoriGoalKeeper\frontend\src\components\Header.jsx ----- 
+// src/components/Header.jsx
+import React from 'react';
+import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+
+const Header = () => {
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          NoriGoalKeeper
+        </Typography>
+        <Button color="inherit" component={Link} to="/goals">
+          Goals
+        </Button>
+        <Button color="inherit" component={Link} to="/goals/create">
+          Add Goal
+        </Button>
+        <Button color="inherit" component={Link} to="/login">
+          Login
+        </Button>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Header;
+   
+----- C:\Users\nori\workspace\NoriGoalKeeper\frontend\src\pages\Dashboard.jsx ----- 
+// src/pages/Dashboard.jsx
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, Grid, Card, CardContent, LinearProgress } from '@mui/material';
+import axios from 'axios';
+
+const Dashboard = () => {
+  const [goals, setGoals] = useState([]);
+
+  useEffect(() => {
+    // APIから目標データを取得
+    axios.get('http://localhost:8080/api/goals/user/1')
+      .then(response => {
+        setGoals(response.data);
+      })
+      .catch(error => {
+        console.error('目標データの取得に失敗しました:', error);
+      });
+  }, []);
+
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        ダッシュボード
+      </Typography>
+      <Grid container spacing={3}>
+        {goals.map(goal => (
+          <Grid item xs={12} sm={6} md={4} key={goal.goalId}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">
+                  {goal.title}
+                </Typography>
+                <Typography color="textSecondary" gutterBottom>
+                  目標達成予定日: {goal.target_date}
+                </Typography>
+                <Typography variant="body2" paragraph>
+                  {goal.description}
+                </Typography>
+                <LinearProgress variant="determinate" value={goal.progress_rate || 0} />
+                <Typography color="textSecondary" align="right">
+                  進捗率: {goal.progress_rate || 0}%
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
+  );
+};
+
+export default Dashboard;
+   
+----- C:\Users\nori\workspace\NoriGoalKeeper\frontend\src\pages\GoalDetail.jsx ----- 
+// src/pages/GoalDetail.jsx
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Container, Typography, Button, CircularProgress } from '@mui/material';
+import axios from 'axios';
+
+const GoalDetail = () => {
+  const { goalId } = useParams(); // URLパラメータから目標IDを取得
+  const [goal, setGoal] = useState(null); // 目標データを保存するステート
+  const [loading, setLoading] = useState(true); // ローディング状態を管理
+
+  // APIから目標詳細を取得
+  useEffect(() => {
+    const fetchGoal = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/goals/${goalId}`);
+        console.log("goal : " + response.data);
+        setGoal(response.data);
+      } catch (error) {
+        console.error("Failed to fetch goal:", error);
+      } finally {
+        setLoading(false); // ローディング完了
+      }
+    };
+    if (goalId) {
+      fetchGoal();
+    }
+  }, [goalId]);
+
+  if (loading) {
+    return (
+      <Container>
+        <CircularProgress />
+      </Container>
+    ); // ローディング中はスピナーを表示
+  }
+
+  if (!goal) {
+    return (
+      <Container>
+        <Typography variant="h6" color="error">
+          Goal not found!
+        </Typography>
+      </Container>
+    ); // 目標が見つからない場合のメッセージ
+  }
+
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        {goal.title}
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        {goal.description || 'No description available.'}
+      </Typography>
+      <Typography variant="subtitle1">
+        Target Date: {goal.target_date ? new Date(goal.target_date).toLocaleDateString() : 'N/A'}
+      </Typography>
+
+      <Button
+        variant="contained"
+        color="primary"
+        component={Link}
+        to={`/goals/${goal.id}/edit`}
+        sx={{ marginTop: 2 }}
+      >
+        Edit Goal
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        component={Link}
+        to="/goals"
+        sx={{ marginTop: 2, marginLeft: 2 }}
+      >
+        Back to Goals
+      </Button>
+    </Container>
+  );
+};
+
+export default GoalDetail;
+   
+----- C:\Users\nori\workspace\NoriGoalKeeper\frontend\src\pages\GoalList.jsx ----- 
+// src/pages/GoalList.jsx
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Container, Typography, Button, List, ListItem, ListItemText, Divider } from '@mui/material';
+import axios from 'axios';
+
+const GoalList = () => {
+  const [goals, setGoals] = useState([]);
+
+  // APIから目標一覧を取得
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/goals/user/1');
+        setGoals(response.data);
+      } catch (error) {
+        console.error("Failed to fetch goals:", error);
+      }
+    };
+    fetchGoals();
+  }, []);
+
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Goals
+      </Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        component={Link}
+        to="/goals/new"
+        sx={{ marginBottom: 2 }}
+      >
+        Create New Goal
+      </Button>
+
+      <List>
+        {goals.map(goal => (
+          <React.Fragment key={goal.id}>
+            <ListItem button component={Link} to={`/goals/${goal.id}`}>
+              <ListItemText
+                primary={goal.title}
+                secondary={goal.description}
+              />
+            </ListItem>
+            <Divider />
+          </React.Fragment>
+        ))}
+      </List>
+    </Container>
+  );
+};
+
+export default GoalList;
+   

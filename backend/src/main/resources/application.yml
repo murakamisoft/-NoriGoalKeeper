@@ -5,6 +5,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/norigoalkeeper
     username: nori_goalkeeper_user
     password: pass
+
+mybatis:
+  type-aliases-package: com.norigoalkeeper.model
+  mapper-locations: classpath:com/norigoalkeeper/mapper/*.xml
+
 springdoc:
   api-docs:
     path: /v3/api-docs

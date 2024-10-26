@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.norigoalkeeper.mapper.UserMapper">
+
+  <resultMap id="userResultMap" type="com.norigoalkeeper.model.User">
+      <result property="userId" column="user_id"/>
+      <result property="username" column="username"/>
+      <result property="email" column="email"/>
+      <result property="password" column="password"/>
+      <result property="createdAt" column="created_at"/>
+      <result property="updatedAt" column="updated_at"/>
+  </resultMap>
+
+  <!-- ユーザーを新規登録します -->
+  <insert id="insertUser" parameterType="com.norigoalkeeper.model.User" useGeneratedKeys="true" keyProperty="userId">
+    INSERT INTO m_users (username, email, password, created_at)
+    VALUES (#{username}, #{email}, #{password}, #{createdAt})
+  </insert>
+
+  <!-- ユーザーIDをもとにユーザー情報を取得します -->
+  <select id="findById" parameterType="Long" resultMap="userResultMap">
+    SELECT * FROM m_users WHERE user_id = #{userId}
+  </select>
+
+  <!-- メールアドレスをもとにユーザー情報を取得します -->
+  <select id="findByEmail" parameterType="String" resultMap="userResultMap">
+    SELECT * FROM m_users WHERE email = #{email}
+  </select>
+
+  <!-- 全ユーザーのリストを取得します -->
+  <select id="findAll" resultMap="userResultMap">
+    SELECT * FROM m_users
+  </select>
+
+  <!-- ユーザー情報を更新します -->
+  <update id="updateUser" parameterType="com.norigoalkeeper.model.User">
+    UPDATE m_users SET username = #{username}, email = #{email}, password = #{password},
+    updated_at = CURRENT_TIMESTAMP WHERE user_id = #{userId}
+  </update>
+
+  <!-- ユーザーを削除します -->
+  <delete id="deleteUser" parameterType="Long">
+    DELETE FROM m_users WHERE user_id = #{userId}
+  </delete>
+
+</mapper>
