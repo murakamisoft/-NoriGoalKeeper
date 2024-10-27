@@ -23,7 +23,7 @@ const GoalList = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 4 }}>
         Goals
       </Typography>
       <Button

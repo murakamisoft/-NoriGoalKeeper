@@ -52,7 +52,7 @@ const GoalDetail = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 4 }}>
         {goal.title}
       </Typography>
       <Typography variant="body1" gutterBottom>

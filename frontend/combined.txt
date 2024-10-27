@@ -7,6 +7,7 @@ import { CssBaseline } from '@mui/material';
 import Dashboard from './pages/Dashboard';
 import GoalList from './pages/GoalList';
 import GoalDetail from './pages/GoalDetail';
+import GoalRegistrationPage from './pages/GoalRegistrationPage';
 import Header from './components/Header';
 
 const App = () => {
@@ -17,7 +18,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/goals" element={<GoalList />} />
-        <Route path="/goals/:id" element={<GoalDetail />} />
+        <Route path="/goals/:goalId" element={<GoalDetail />} />
+        <Route path="/goals/register" element={<GoalRegistrationPage />} />
         {/* 必要に応じて他のページも追加 */}
       </Routes>
     </Router>
@@ -39,14 +41,17 @@ const Header = () => {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           NoriGoalKeeper
         </Typography>
-        <Button color="inherit" component={Link} to="/goals">
-          Goals
+        <Button color="inherit" component={Link} to="/">
+          ダッシュボード
         </Button>
-        <Button color="inherit" component={Link} to="/goals/create">
-          Add Goal
+        <Button color="inherit" component={Link} to="/goals">
+          目標
+        </Button>
+        <Button color="inherit" component={Link} to="/goals/register">
+          目標追加
         </Button>
         <Button color="inherit" component={Link} to="/login">
-          Login
+          ログイン
         </Button>
       </Toolbar>
     </AppBar>
@@ -65,8 +70,12 @@ const Dashboard = () => {
   const [goals, setGoals] = useState([]);
 
   useEffect(() => {
+    // 仮のユーザーIDをローカルストレージに保存
+    const userId = 1; // 仮のユーザーID
+    localStorage.setItem('userId', userId);
+
     // APIから目標データを取得
-    axios.get('http://localhost:8080/api/goals/user/1')
+    axios.get(`http://localhost:8080/api/goals/user/${userId}`)
       .then(response => {
         setGoals(response.data);
       })
@@ -77,7 +86,7 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 4 }}>
         ダッシュボード
       </Typography>
       <Grid container spacing={3}>
@@ -89,14 +98,14 @@ const Dashboard = () => {
                   {goal.title}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
-                  目標達成予定日: {goal.target_date}
+                  目標達成予定日: {goal.targetDate} {/* target_dateはtargetDateに修正 */}
                 </Typography>
                 <Typography variant="body2" paragraph>
                   {goal.description}
                 </Typography>
-                <LinearProgress variant="determinate" value={goal.progress_rate || 0} />
+                <LinearProgress variant="determinate" value={goal.progressRate || 0} /> {/* progress_rateはprogressRateに修正 */}
                 <Typography color="textSecondary" align="right">
-                  進捗率: {goal.progress_rate || 0}%
+                  進捗率: {goal.progressRate || 0}%
                 </Typography>
               </CardContent>
             </Card>
@@ -125,8 +134,9 @@ const GoalDetail = () => {
   useEffect(() => {
     const fetchGoal = async () => {
       try {
+        console.log("start2");
         const response = await axios.get(`http://localhost:8080/api/goals/${goalId}`);
-        console.log("goal : " + response.data);
+        console.log("goalDetail : " + response.data);
         setGoal(response.data);
       } catch (error) {
         console.error("Failed to fetch goal:", error);
@@ -135,10 +145,14 @@ const GoalDetail = () => {
       }
     };
     if (goalId) {
+      console.log("start1");
       fetchGoal();
+    } else {
+      console.log("not start1 ; " + goalId);
     }
   }, [goalId]);
 
+  console.log("aaa : " + goalId);
   if (loading) {
     return (
       <Container>
@@ -159,21 +173,21 @@ const GoalDetail = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 4 }}>
         {goal.title}
       </Typography>
       <Typography variant="body1" gutterBottom>
         {goal.description || 'No description available.'}
       </Typography>
       <Typography variant="subtitle1">
-        Target Date: {goal.target_date ? new Date(goal.target_date).toLocaleDateString() : 'N/A'}
+        Target Date: {goal.targetDate ? new Date(goal.targetDate).toLocaleDateString() : 'N/A'}
       </Typography>
 
       <Button
         variant="contained"
         color="primary"
         component={Link}
-        to={`/goals/${goal.id}/edit`}
+        to={`/goals/${goal.goalId}/edit`}
         sx={{ marginTop: 2 }}
       >
         Edit Goal
@@ -208,6 +222,7 @@ const GoalList = () => {
     const fetchGoals = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/goals/user/1');
+        console.log("goals user response.data : " + JSON.stringify(response.data));
         setGoals(response.data);
       } catch (error) {
         console.error("Failed to fetch goals:", error);
@@ -218,7 +233,7 @@ const GoalList = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 4 }}>
         Goals
       </Typography>
       <Button
@@ -233,8 +248,8 @@ const GoalList = () => {
 
       <List>
         {goals.map(goal => (
-          <React.Fragment key={goal.id}>
-            <ListItem button component={Link} to={`/goals/${goal.id}`}>
+          <React.Fragment key={goal.goalId}>
+            <ListItem button component={Link} to={`/goals/${goal.goalId}`}>
               <ListItemText
                 primary={goal.title}
                 secondary={goal.description}
@@ -249,4 +264,95 @@ const GoalList = () => {
 };
 
 export default GoalList;
+   
+----- C:\Users\nori\workspace\NoriGoalKeeper\frontend\src\pages\GoalRegistrationPage.jsx ----- 
+// src/pages/GoalRegistrationPage.jsx
+import React, { useState } from 'react';
+import { TextField, Button, Typography, Container } from '@mui/material';
+import axios from 'axios';
+
+const GoalRegistrationPage = () => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [error, setError] = useState(null); // エラーハンドリング用の状態
+  const [successMessage, setSuccessMessage] = useState(''); // 成功メッセージ用の状態
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (title && description && deadline) {
+      try {
+        const userId = localStorage.getItem('userId');
+        const response = await axios.post('http://localhost:8080/api/goals', {
+          userId,
+          title,
+          description,
+          targetDate: deadline,
+        });
+        console.log('登録成功:', response.data);
+        setSuccessMessage('目標が正常に登録されました！'); // 成功メッセージを設定
+        setTitle('');
+        setDescription('');
+        setDeadline('');
+        setError(null); // エラーをクリア
+      } catch (err) {
+        console.error('登録失敗:', err);
+        setError('目標の登録に失敗しました。'); // エラーメッセージを設定
+        setSuccessMessage(''); // 成功メッセージをクリア
+      }
+    }
+  };
+
+  return (
+    <Container maxWidth="sm">
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 4 }}>
+        新しい目標を登録
+      </Typography>
+
+      {error && <Typography color="error">{error}</Typography>} {/* エラーメッセージの表示 */}
+      {successMessage && <Typography color="primary">{successMessage}</Typography>} {/* 成功メッセージの表示 */}
+
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="目標タイトル"
+          fullWidth
+          required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          margin="normal"
+        />
+
+        <TextField
+          label="目標の説明"
+          fullWidth
+          required
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          margin="normal"
+          multiline
+          rows={4}
+        />
+
+        <TextField
+          label="締め切り"
+          type="date"
+          fullWidth
+          required
+          value={deadline}
+          onChange={(e) => setDeadline(e.target.value)}
+          margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+
+        <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
+          登録
+        </Button>
+      </form>
+    </Container>
+  );
+};
+
+export default GoalRegistrationPage;
    

@@ -11,16 +11,16 @@ const Header = () => {
           NoriGoalKeeper
         </Typography>
         <Button color="inherit" component={Link} to="/">
-          DashBoard
+          ダッシュボード
         </Button>
         <Button color="inherit" component={Link} to="/goals">
-          Goals
+          目標
         </Button>
-        <Button color="inherit" component={Link} to="/goals/create">
-          Add Goal
+        <Button color="inherit" component={Link} to="/goals/register">
+          目標追加
         </Button>
         <Button color="inherit" component={Link} to="/login">
-          Login
+          ログイン
         </Button>
       </Toolbar>
     </AppBar>
