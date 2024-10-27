@@ -31,7 +31,6 @@ const GoalDetail = () => {
     }
   }, [goalId]);
 
-  console.log("aaa : " + goalId);
   if (loading) {
     return (
       <Container>
@@ -43,8 +42,8 @@ const GoalDetail = () => {
   if (!goal) {
     return (
       <Container>
-        <Typography variant="h6" color="error">
-          Goal not found!
+        <Typography variant="h6" color="error" sx={{ marginTop: 4 }}>
+          目標は削除されました。
         </Typography>
       </Container>
     ); // 目標が見つからない場合のメッセージ
